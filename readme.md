@@ -1,3 +1,3 @@
 ### 组件开发流程&规范
 
-[组件开发](https://lark.alipay.com/karlz5/dgzwmd/how-to-write)
+[组件开发](https://www.yuque.com/zwswv1)
