@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+require('colors');
+const { resolve } = require('path');
+const program = require('commander');
+const res = command => resolve(__dirname, '../commands/', command);
+
+// 定义当前版本
+program
+  .version(require('../package').version, '-v, --version');
+
+program
+  .usage('<command>');
+
+program
+  .command('init')
+  .description('组件初始化。。。')
+  .action(() => {
+    require(res('init'))();
+  });
+
+program
+  .command('dev')
+  .description('组件开发调试。。。')
+  .action((data) => {
+    require(res('dev'))(data);
+  });
+
+program
+  .command('publish')
+  .description('组件发布到npm')
+  .action((data) => {
+    require(res('publish'))(data);
+  });
+
+program
+  .command('save')
+  .description('组件发布到组件市场')
+  .action((data) => {
+    require(res('save'))(data);
+  });
+
+program
+  .command('update')
+  .description('更新组件基本信息。。。')
+  .action((data) => {
+    require(res('update'))(data);
+  });
+
+program
+  .command('add')
+  .description('kobe应用中快速生成组件模板。。。')
+  .action((data, options) => {
+    require(res('add'))(data);
+  });
+
+program
+  .command('build')
+  .description('构建')
+  .action((data) => {
+    require(res('build'))(data);
+  });
+
+program
+  .command('test')
+  .description('组件测试')
+  .action((data) => {
+    require(res('test'))(data);
+  });
+
+program
+  .command('config')
+  .description('配置')
+  .action((data) => {
+    require(res('config'))(data);
+  });
+
+program.parse(process.argv);
+
+if (!program.args.length) {
+  program.outputHelp();
+  process.exit(0);
+}
