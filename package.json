@@ -1,6 +1,6 @@
 {
   "name": "cook-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "cook cli",
   "bin": {
     "cook": "./bin/cook"
@@ -10,6 +10,7 @@
     "srclint": "eslint site commands config --ext '.js,.jsx' --fix",
     "pub": "node ./scripts/publish.js",
     "pub-beta": "npm publish --tag beta",
+    "copyds":"cp index.d.ts lib/",
     "dev": "rimraf ./_site-dev && cross-env NODE_ENV=development concurrently \"bisheng start -c ./site-dev/bisheng-pc.config.js\"",
     "save": "rimraf ./_site-dev && cross-env NODE_ENV=production concurrently \"bisheng build -c ./site-dev/bisheng-pc.config.js\"",
     "dev-double": "rimraf ./_site-dev && cross-env NODE_ENV=development concurrently \"bisheng start -c ./site-dev/bisheng-pc.config.js\" \"bisheng start -c ./site-dev/bisheng-wap.config.js\"",
