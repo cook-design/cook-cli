@@ -47,7 +47,7 @@ const moveProject = async (boilerplatePath, project, componentId) => {
     pkgJSon.description = description;
     pkgJSon.homepage = project.web_url;
     pkgJSon.author = author;
-    pkgJSon.files = ['src', 'lib', 'es', 'package.json', 'index.d.ts', 'README.md', 'mentor.js'];
+    pkgJSon.files = ['src', 'lib', 'es', 'package.json', 'README.md', 'mentor.js'];
     pkgJSon.mentorConfig.id = componentId;
     pkgJSon.mentorConfig.platform = platform;
     pkgJSon.mentorConfig.tag = tag;
