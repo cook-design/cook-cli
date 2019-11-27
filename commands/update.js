@@ -2,6 +2,7 @@ const colors = require('colors');
 const path = require('path');
 const fetch = require('node-fetch');
 const fs = require('fs');
+const get = require('lodash/get');
 
 const { API_URL } = require('../config/dynamic-config.js');
 const { updateComponent, checkComponent } = require('./service.js');
@@ -40,9 +41,9 @@ async function uploadLogo() {
 async function componentUpdate() {
   try {
     const mentorPkg = require(path.join(process.cwd(), 'package.json'));
-    const { name, description, mentorConfig = {} } = mentorPkg;
-    let { id } = mentorPkg;
-    id = id || mentorConfig.id || '';
+    const appConfig = require(path.join(process.cwd(), 'app.config.ts'));
+    const { name, description } = mentorPkg;
+    const id = get(appConfig, 'componentId', '');
     const logo = await uploadLogo();
     await updateComponent({ id, name, description, logo });
     const { data } = await checkComponent({ id, name });
@@ -63,9 +64,9 @@ async function update() {
 
   // 判断组件是否已被保存
   const mentorPkg = require(path.join(process.cwd(), 'package.json'));
-  const { name, mentorConfig = {} } = mentorPkg;
-  let { id } = mentorPkg;
-  id = id || mentorConfig.id || '';
+  const appConfig = require(path.join(process.cwd(), 'app.config.ts'));
+  const { name } = mentorPkg;
+  const id = get(appConfig, 'componentId', '');
   const checkRes = await checkComponent({ id, name });
   // 首次发布
   if (!checkRes.data) {

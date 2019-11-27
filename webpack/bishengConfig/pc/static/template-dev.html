@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Cook Design</title>
+  <link rel="icon" type="image/x-icon" href="https://gw.alipayobjects.com/zos/basement_prod/346785ad-3910-44ba-bead-ce0b4e692836.ico"/>
+  <script src="https://gw.alipayobjects.com/os/lib/babel-polyfill/6.22.0/dist/polyfill.min.js"></script>
+  <script src="https://gw.alipayobjects.com/os/lib/history/3.3.0/umd/history.min.js"></script>
+  {% if reactVersion === '15' %}
+  <script src="https://gw.alipayobjects.com/os/lib/react/15.6.2/dist/react.js"></script>
+  <script src="https://gw.alipayobjects.com/os/lib/react-dom/15.6.2/dist/react-dom.js"></script>
+  {% endif %}
+  {% if reactVersion === '16' %}
+  <script src="https://gw.alipayobjects.com/os/lib/react/16.8.6/umd/react.development.js"></script>
+  <script src="https://gw.alipayobjects.com/os/lib/react-dom/16.8.6/umd/react-dom.development.js"></script>
+  {% endif %}
+  {% for item in injectHeads %}
+    {{ item }}
+  {% endfor %}
+</head>
+<body> 
+<div id="react-content"></div>
+{% for item in injectBodies %}
+  {{ item }}
+{% endfor %}
+<script src="./index.js"></script>
+</body>
+</html>

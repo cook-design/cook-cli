@@ -60,7 +60,7 @@ module.exports = async () => {
     global.component.templatePath = process.argv[3] || '';
     prompt(getQuestions()).then(async (promptRes) => {
       global.component.platform = filterPlatform(promptRes.platform);
-      global.component.name = `mo-${promptRes.name}`;
+      global.component.name = promptRes.name;
       console.log(`添加组件: ${JSON.stringify(global.component, null, 2)}`);
       const temporaryFold = path.join(await getBoilerplate(), 'src');
       vfs.src(['**/*', '!./logo.png'], { cwd: temporaryFold, dot: false })

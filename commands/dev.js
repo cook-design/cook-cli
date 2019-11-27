@@ -9,6 +9,8 @@ const writePkgToLocal = require('../util/write-pkg-to-local');
 const killPort = require('../util/kill-port');
 const sudo = require('../util/sudo');
 
+const { start } = require('../webpack/bisheng/index');
+
 process.on('SIGINT', () => {
   process.exit(0);
 });
@@ -20,13 +22,8 @@ process.on('SIGTERM', () => {
 const dev = async () => {
   try {
     await checkMentorCliVersion();
-    const cookPkg = writePkgToLocal();
-    const solution = get(cookPkg, 'mentorConfig.solution', '') || cookPkg.platform || '';
-    const shell = /(h5|mobile)/i.test(solution) ? ['run', 'dev-double'] : ['run', 'dev'];
-    console.log(`excute shell: ${shell.join(' ')}`)
-    const child = spawn('npm', shell, {
-      cwd: path.join(__dirname, '../'),
-      stdio: [process.stdin, process.stdout, process.stderr],
+    await start({
+      bishengConfigPath: path.join(__dirname, '../webpack/bishengconfig/index.js'),
     });
   } catch (err) {
     console.log(colors.red(err));

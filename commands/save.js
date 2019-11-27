@@ -1,61 +1,27 @@
 const colors = require('colors');
 const path = require('path');
 const get = require('lodash/get');
-const fetch = require('node-fetch');
-const { exec, execSync } = require('child_process');
-const spawn = require('cross-spawn');
+const { exec } = require('child_process');
 const fs = require('fs');
 const checkMentorCliVersion = require('../util/check-mentor-cli-version');
-const { API_URL } = require('../config/dynamic-config.js');
 const { upLoadImg, upLoadDemo } = require('./ftp.js');
-const sudo = require('../util/sudo');
 const writePkgToLocal = require('../util/write-pkg-to-local');
-const rimraf = require('rimraf');
 const { updateComponent, checkComponent, checkVersion, saveVersion, checkNpmVersion } = require('./service.js');
+const { build } = require('../webpack/bisheng/index');
 
-let solution = '';
-
-async function upload() {
+async function uploadDocument() {
   const pkg = require(path.join(process.cwd(), 'package.json'));
   const { name, version } = pkg;
-  const pkgName = name.replace(/@alipay/, '');
   try {
-    const demoUrl = await upLoadDemo(pkgName, version);
-    console.log(`Demo文档上传成功: ${demoUrl}`.yellow);
+    const demoUrl = await upLoadDemo(name, version);
+    console.log(`文档上传成功: ${demoUrl}`.yellow);
   } catch (e) {
-    throw new Error("上传Demo失败-ftp配置错误");     
+    throw new Error("文档上传失败-ftp配置错误");     
   }
 }
 
 async function clean() {
   exec(`cd ${path.join(__dirname, '../')} && rimraf site-dev.zip`);
-}
-
-async function watchUpdate() {
-  return new Promise((resolve, reject) => {
-    console.log('正在上传Demo文档文档, 请勿关闭控制台...');
-    const shellType = /(h5|mobile)/i.test(solution) ? 'save-double' : 'save';
-    const shell = `npm run ${shellType}`;
-    console.log(`excute shell: ${shell}`)
-    const ps = exec(shell, {
-      cwd: path.join(__dirname, '../'),
-    }, async (err) => {
-      try {
-        if (err) {
-          reject(err);
-        } else {
-          await upload();
-          await clean();
-          resolve();
-        }
-      } catch(e) {
-        reject(e);
-      }
-    });
-    ps.stdout.on('data', (d) => {
-      console.log(d);
-    });
-  });
 }
 
 function check() {
@@ -76,10 +42,9 @@ function check() {
 async function uploadLogo() {
   const { name } = require(path.join(process.cwd(), 'package.json'));
   const logo = path.join(process.cwd(), 'src/logo.png');
-  const pkgName = name.replace(/@alipay/, '');
   if (fs.existsSync(logo)) {
     try {
-      const logoUrl = await upLoadImg(pkgName);
+      const logoUrl = await upLoadImg(name);
       console.log(`组件logo上传成功: ${logoUrl}`.yellow);
       return logoUrl;
     } catch (err) {
@@ -112,23 +77,26 @@ async function save() {
       return;
     }
     const cookPkg = writePkgToLocal();
-    solution = get(cookPkg, 'mentorConfig.solution', '') || cookPkg.platform || '';
     // 判断组件是否存在
     const mentorPkg = require(path.join(process.cwd(), 'package.json'));
-    const { name, description, version, mentorConfig = {} } = mentorPkg;
-    let { id } = mentorPkg;
-    id = id || mentorConfig.id || '';
+    const appConfig = require(path.join(process.cwd(), 'app.config.ts'));
+    const { name, description, version } = mentorPkg;
+    const id = get(appConfig, 'componentId', '');
+    if (!id) throw '组件Id获取异常';
     // 判断该版本的TNPM包是否已发布
     await checkNpmByName(name, version);
     const { data } = await checkComponent({ id, name });
     if (data) {
       const { data: versionData } = await checkVersion({ cid: id, version });
       if (!versionData) {
-        await watchUpdate();
+        await build({
+          bishengConfigPath: path.join(__dirname, '../webpack/bishengconfig/index.js'),
+        });
+        await uploadDocument();
         const logo = await uploadLogo();
         await updateComponent({ id, name, description, logo });
         await saveVersion({ id, name, version, pkg: JSON.stringify(mentorPkg) });
-        console.log(colors.blue(`组件 ${name}: ${version} 成功发布到组件市场`));      
+        console.log(colors.blue(`组件 ${name}: ${version} 成功发布到组件市场`));
       } else {
         console.log(colors.red('该版本已存在，请在package.json修改版本号再提交'));
       }

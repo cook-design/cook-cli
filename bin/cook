@@ -29,8 +29,8 @@ program
 program
   .command('publish')
   .description('组件发布到npm')
-  .action((data) => {
-    require(res('publish'))(data);
+  .action(async (data) => {
+    await require(res('publish'))(data);
   });
 
 program

@@ -35,7 +35,7 @@ const config = {
   // ftp配置
   FTP: {
     HOST: getConfig('FTP.HOST', '47.98.58.111'),
-    PORT: getConfig('FTP.PORT', 24222),
+    PORT: getConfig('FTP.PORT', 10241),
     USERNAME: getConfig('FTP.USERNAME', ''),
     PASSWORD: getConfig('FTP.PASSWORD', ''),
   },

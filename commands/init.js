@@ -85,7 +85,7 @@ const getQuestions = () => {
           return '请使用大于6位的中划线命名';
         } else {
           const { data } = await checkComponent({
-            name: `mo-${val}`,
+            name: val,
           });
           if (data) {
             return '该组件已存在！';
@@ -235,15 +235,13 @@ module.exports = async () => {
         global.component.description = cDescription;
         global.component.token = getToken();
         global.component.author = `${global.componentUser.nickname}(${global.componentUser.account})`;
-        global.component.name = `mo-${global.component.name}`;
         global.component.platform = filterComponentParam('platform');          
         global.component.tag = filterComponentParam('tag');
         global.component.type = filterComponentParam('type');
-        const pkgName = global.component.name;
         console.log(`创建组件：${JSON.stringify(global.component, null, 4)})`);
         const { name, platform, tag, type, description, author } = global.component;
         const { data } = await saveComponnetToDB({
-          name: pkgName,
+          name,
           platform,
           tag: tag || 'None',
           type: type || 'None',
@@ -255,7 +253,7 @@ module.exports = async () => {
         await createProject(global.component);
         await updateComponent({
           id: global.component.componentId,
-          name: pkgName,
+          name,
           gid: global.component.gid,
           homepage: global.component.gitlabUrl,
         });

@@ -38,7 +38,7 @@ const getBoilerplate = async () => {
 };
 
 const moveProject = async (boilerplatePath, project, componentId) => {
-  const { name, platform, tag, type, author, description } = global.component;
+  const { name, description, platform, author } = global.component;
   const updatePkg = () => {
     const pkgJsonPath = path.resolve(name, 'package.json');
     const pkgJSon = require(pkgJsonPath);
@@ -47,11 +47,6 @@ const moveProject = async (boilerplatePath, project, componentId) => {
     pkgJSon.description = description;
     pkgJSon.homepage = project.web_url;
     pkgJSon.author = author;
-    pkgJSon.files = ['src', 'lib', 'es', 'package.json', 'README.md', 'mentor.js'];
-    pkgJSon.mentorConfig.id = componentId;
-    pkgJSon.mentorConfig.platform = platform;
-    pkgJSon.mentorConfig.tag = tag;
-    pkgJSon.mentorConfig.type = type;
     return writeJsonFile.sync(pkgJsonPath, pkgJSon, { detectIndent: true });
   };
 
@@ -64,6 +59,20 @@ const moveProject = async (boilerplatePath, project, componentId) => {
       demoPath,
       nunjucks.renderString(demoTemplate, {
         name,
+      }),
+    );
+  }
+
+  // 重写app.config.ts
+  const rewriteAppConfig = () => {
+    const { name } = global.component;
+    const appConfigPath = path.join(process.cwd(), `${name}/app.config.ts`);
+    const appConfigTemplate = fs.readFileSync(appConfigPath).toString();
+    fs.writeFileSync(
+      appConfigPath,
+      nunjucks.renderString(appConfigTemplate, {
+        componentId,
+        platform,
       }),
     );
   }
@@ -81,6 +90,7 @@ const moveProject = async (boilerplatePath, project, componentId) => {
       .on('finish', () => {
         updatePkg();
         rewriteDemo();
+        rewriteAppConfig();
         rimraf.sync(boilerplatePath);
         resolve();
       });

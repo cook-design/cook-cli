@@ -27,7 +27,7 @@ const createProject = async ({ token, name, description, componentId }) => {
       global.component.gitlabUrl = project.web_url;
       await cloneProject(project, componentId);
     } else {
-      console.log(`组件创建失败: ${JSON.stringify(body, null, 2)}`.red);
+      console.log(`组件创建失败: ${JSON.stringify(project, null, 2)}`.red);
     }
   } catch (err){
     throw err;
