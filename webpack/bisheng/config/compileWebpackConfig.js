@@ -3,7 +3,7 @@
  */
 
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const resolveAppConfig = require('./resolveAppConfig');
 
 const {
@@ -40,7 +40,7 @@ const compileWebpackConfig = {
 
   resolve: {
     modules: mPath,
-    extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.ts', '.tsx', '.js', '.jsx', '.json'],
+    extensions: ['.web.tsx', '.web.ts', '.web.jsx', '.web.js', '.ts', '.tsx', '.js', '.jsx', '.json', '.less'],
   },
 
   resolveLoader: {
@@ -83,31 +83,31 @@ const compileWebpackConfig = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: [{
-            loader: require.resolve('css-loader'),
-          }, {
-            loader: require.resolve('postcss-loader'),
-            options: indexPostcssOption,
-          }],
-        })
+        use: [{
+          loader: MiniCssExtractPlugin.loader,
+        }, {
+          loader: require.resolve('css-loader'),
+        }, {
+          loader: require.resolve('postcss-loader'),
+          options: indexPostcssOption,
+        }],
       },
       {
         test: /\.less$/,
-        use: ExtractTextPlugin.extract({
-          use: [{
-            loader: require.resolve('css-loader'),
-          }, {
-            loader: require.resolve('postcss-loader'),
-            options: indexPostcssOption,
-          }, {
-            loader: require.resolve('less-loader'),
-            options: {
-              sourceMap: true,
-              modifyVars: themeOption,
-            },
-          }]
-        })
+        use: [{
+          loader: MiniCssExtractPlugin.loader,
+        }, {
+          loader: require.resolve('css-loader'),
+        }, {
+          loader: require.resolve('postcss-loader'),
+          options: indexPostcssOption,
+        }, {
+          loader: require.resolve('less-loader'),
+          options: {
+            sourceMap: true,
+            modifyVars: themeOption,
+          },
+        }],
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -135,10 +135,11 @@ const compileWebpackConfig = {
       },
     ],
   },
+
   plugins: [
-    new ExtractTextPlugin({
-      filename: 'index.css',
-      allChunks: true,
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
     }),
   ],
 }
