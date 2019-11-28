@@ -3,6 +3,7 @@
  */
 
 const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const resolveAppConfig = require('./resolveAppConfig');
 
 const {
@@ -81,35 +82,32 @@ const compileWebpackConfig = {
         }],
       },
       {
-        test: /\.less?$/,
-        use: [{
-          loader: require.resolve('style-loader'),
-        }, {
-          loader: require.resolve('css-loader'),
-          options: {
-            autoprefixer: false,
-          },
-        }, {
-          loader: require.resolve('postcss-loader'),
-          options: indexPostcssOption,
-        }, {
-          loader: require.resolve('less-loader'),
-          options: {
-            sourceMap: true,
-            modifyVars: themeOption,
-          },
-        }],
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          use: [{
+            loader: require.resolve('css-loader'),
+          }, {
+            loader: require.resolve('postcss-loader'),
+            options: indexPostcssOption,
+          }],
+        })
       },
       {
-        test: /\.css?$/,
-        use: [{
-          loader: require.resolve('style-loader'),
-        }, {
-          loader: require.resolve('css-loader'),
-        }, {
-          loader: require.resolve('postcss-loader'),
-          options: indexPostcssOption,
-        }]
+        test: /\.less$/,
+        use: ExtractTextPlugin.extract({
+          use: [{
+            loader: require.resolve('css-loader'),
+          }, {
+            loader: require.resolve('postcss-loader'),
+            options: indexPostcssOption,
+          }, {
+            loader: require.resolve('less-loader'),
+            options: {
+              sourceMap: true,
+              modifyVars: themeOption,
+            },
+          }]
+        })
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -136,7 +134,13 @@ const compileWebpackConfig = {
         loader: 'url-loader?limit=10000&minetype=image/svg+xml',
       },
     ],
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename: 'index.css',
+      allChunks: true,
+    }),
+  ],
 }
 
 module.exports = resolveAppConfig(compileWebpackConfig);
