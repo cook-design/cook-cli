@@ -39,6 +39,8 @@ const config = {
     USERNAME: getConfig('FTP.USERNAME', ''),
     PASSWORD: getConfig('FTP.PASSWORD', ''),
   },
+  // oss token
+  OSS_TOKEN: getConfig('OSS_TOKEN', ''),
 };
 
 module.exports = config;

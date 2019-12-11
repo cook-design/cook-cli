@@ -24,6 +24,7 @@ const tsCompile = (modules) => new Promise((resolve, reject) => {
     ];
     if (tsLoaderOption.allowJs) {
       source.unshift(`${componentPath}/**/*.jsx`);
+      source.unshift(`${componentPath}/**/*.js`);
     }
     const tsResult = gulp.src(source)
       .pipe(ts(tsLoaderOption))

@@ -3,8 +3,9 @@ const webpack = require('webpack');
 const { exec } = require('child_process');
 const path = require('path');
 const get = require('lodash/get');
-const glob = require('glob');
-const { FileClient, fileZipClientConfig } = require('./config.js');
+const rimraf = require('rimraf');
+const choiceUpload = require('choice-upload');
+const { OSS_TOKEN } = require('../config/dynamic-config.js');
 const { appConfig, pkgOption } = require('../webpack/bisheng/config/getOption');
 const compileWebpackConfig = require('../webpack/bisheng/config/compileWebpackConfig');
 const compile = require('../webpack/bisheng/config/compile');
@@ -112,15 +113,12 @@ const buildSystemMin = () => new Promise((resolve, reject) => {
 const upload = async () => {
   console.log('开始发布CDN');
   const { name, version } = pkgOption;
-  const pkgName = name.replace(/(@alipay)|(@alife)|(@ali)/g, '');
-  const libraryFolder = path.join(path.join(process.cwd(), 'library'));
-  const files = glob.sync(`${libraryFolder}/**/*.*`);
-  const result = [];
-  for(let i = 0; i < files.length; i++) {
-    const regPath = files[i].match(/library\/(.+)$/);
-    const res = await FileClient.upload(`${pkgName}/${version}/${regPath[1]}`, files[i], fileZipClientConfig);
-    result.push(res);
+  if (!OSS_TOKEN) {
+    throw 'OSS_TOKEN错误，请执行 cook config进行配置';
   }
+  const umdFolderPath = path.join(process.cwd(), 'library/umd');
+  const result = await choiceUpload.umd(name, version, umdFolderPath, OSS_TOKEN);
+  console.log(result);
   return result;
 }
 
@@ -139,21 +137,28 @@ const tnpmPub = () => new Promise((resolve, reject) => {
   });
 })
 
+const rimrafLibrary = () => {
+  rimraf.sync(path.join(process.cwd(), 'library'), {}, (err) => {
+    throw err;
+  });
+}
+
 console.log('开始执行生产发布。。。');
 
 module.exports = async() => {
   try {
     if (useCdn) {
       await check();
+      await rimrafLibrary();
       await buildUmd();
       await buildUmdMin();
       await buildSystem();
       await buildSystemMin();
       await compile();
       await tnpmPub();
-      // const uploadRes = await upload();
-      // console.log('CDN发布产物：');
-      // console.log(uploadRes);
+      const uploadRes = await upload();
+      console.log('CDN发布产物：');
+      console.log(uploadRes);
     } else {
       await compile();
       await tnpmPub();

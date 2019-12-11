@@ -111,6 +111,7 @@ const tsLoaderOption = {
   moduleResolution: 'node',
   declaration: true,
   allowSyntheticDefaultImports: true,
+  allowJs: true,
 };
 
 const indexPostcssOption = {
