@@ -43,7 +43,7 @@ const moveProject = async (boilerplatePath, project, componentId) => {
     const pkgJsonPath = path.resolve(name, 'package.json');
     const pkgJSon = require(pkgJsonPath);
     pkgJSon.version = '1.0.0';
-    pkgJSon.name = name;
+    pkgJSon.name = `@choicefe/${name}`;
     pkgJSon.description = description;
     pkgJSon.homepage = project.web_url;
     pkgJSon.author = author;
@@ -58,7 +58,7 @@ const moveProject = async (boilerplatePath, project, componentId) => {
     fs.writeFileSync(
       demoPath,
       nunjucks.renderString(demoTemplate, {
-        name,
+        name: `@choicefe/${name}`,
       }),
     );
   }

@@ -84,19 +84,21 @@ async function save() {
     const id = get(appConfig, 'componentId', '');
     if (!id) throw '组件Id获取异常';
     // 判断该版本的TNPM包是否已发布
-    await checkNpmByName(name, version);
+    // await checkNpmByName(name, version);
     const { data } = await checkComponent({ id, name });
     if (data) {
       const { data: versionData } = await checkVersion({ cid: id, version });
       if (!versionData) {
         await build({
           bishengConfigPath: path.join(__dirname, '../webpack/bishengconfig/index.js'),
+          callback: async () => {
+            await uploadDocument();
+            const logo = await uploadLogo();
+            await updateComponent({ id, name, description, logo });
+            await saveVersion({ id, name, version, pkg: JSON.stringify(mentorPkg) });
+            console.log(colors.blue(`组件 ${name}: ${version} 成功发布到组件市场`));
+          }
         });
-        await uploadDocument();
-        const logo = await uploadLogo();
-        await updateComponent({ id, name, description, logo });
-        await saveVersion({ id, name, version, pkg: JSON.stringify(mentorPkg) });
-        console.log(colors.blue(`组件 ${name}: ${version} 成功发布到组件市场`));
       } else {
         console.log(colors.red('该版本已存在，请在package.json修改版本号再提交'));
       }
