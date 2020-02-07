@@ -14,3 +14,4 @@ module.exports = Object.assign({}, {
   h5ComponentPath: path.join(__dirname, './h5/template/index.jsx').replace(/\\/g, '\\\\'),
   h5HtmlTemplate: path.join(__dirname, `./h5/static/template-${process.env.NODE_ENV === 'development' ? 'dev' : 'build'}.html`).replace(/\\/g, '\\\\'),
 });
+
