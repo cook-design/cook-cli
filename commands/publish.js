@@ -113,11 +113,12 @@ const buildSystemMin = () => new Promise((resolve, reject) => {
 const upload = async () => {
   console.log('开始发布CDN');
   const { name, version } = pkgOption;
+  const appName = name.indexOf('/') > -1 ? name.split('/')[1] : name; // 对name处理，去掉私域标识
   if (!OSS_TOKEN) {
     throw 'OSS_TOKEN错误，请执行 cook config进行配置';
   }
-  const umdFolderPath = path.join(process.cwd(), 'library/umd');
-  const result = await choiceUpload.umd(name, version, umdFolderPath, OSS_TOKEN);
+  const umdFolderPath = path.join(process.cwd(), 'library');
+  const result = await choiceUpload.umd(appName, version, umdFolderPath, OSS_TOKEN);
   console.log(result);
   return result;
 }
