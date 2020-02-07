@@ -117,7 +117,7 @@ const upload = async () => {
   if (!OSS_TOKEN) {
     throw 'OSS_TOKEN错误，请执行 cook config进行配置';
   }
-  const umdFolderPath = path.join(process.cwd(), 'library/umd');
+  const umdFolderPath = path.join(process.cwd(), 'library');
   const result = await choiceUpload.umd(appName, version, umdFolderPath, OSS_TOKEN);
   console.log(result);
   return result;
