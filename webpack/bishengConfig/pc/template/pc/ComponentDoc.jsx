@@ -53,7 +53,7 @@ export default class ComponentDoc extends React.Component {
 
   render() {
     const props = this.props;
-    const { api: doc, demo } = props.data.document;
+    const { api: doc, demo = {} } = props.data.document;
     const { meta } = doc;
     const demos = Object.keys(demo).map(key => demo[key])
       .filter(demoData => !demoData.meta.hidden);
@@ -124,10 +124,10 @@ export default class ComponentDoc extends React.Component {
                 }].concat(getChildren(doc.content || ['placeholder'])),
               )
             }
-            <h2 className="m-local-h2">
+            {demos.length > 0 && <h2 className="m-local-h2">
               <div className="m-locale-item">代码演示</div>
               <div className={expandTriggerClass} onClick={this.handleExpandToggle} />
-            </h2>
+            </h2>}
           </section>
           <div className="m-code" style={{ margin: (isSingleCol) ? '0' : '0 -8px' }}>
             <div className={isSingleCol ?
