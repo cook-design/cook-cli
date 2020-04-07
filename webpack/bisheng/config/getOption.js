@@ -112,6 +112,7 @@ const tsLoaderOption = {
   declaration: true,
   allowSyntheticDefaultImports: true,
   allowJs: true,
+  experimentalDecorators: true,
 };
 
 const indexPostcssOption = {
