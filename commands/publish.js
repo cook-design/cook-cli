@@ -126,7 +126,9 @@ const upload = async () => {
 const tnpmPub = () => new Promise((resolve, reject) => {
   const shell = `cd ${process.cwd()} && npm run lint && npm publish`;
   console.log(`excute shell: ${shell}`)
-  const ps = exec(shell, async (err) => {
+  const ps = exec(shell, {
+    maxBuffer: 1024 * 1024 * 1000
+  }, async (err) => {
     if (err) {
       reject(err);
     } else {
