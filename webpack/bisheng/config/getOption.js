@@ -113,7 +113,7 @@ const tsLoaderOption = {
   allowSyntheticDefaultImports: true,
   allowJs: true,
   experimentalDecorators: true,
-  // exclude: ['node_modules'],
+  skipLibCheck: true, //忽略所有库中的声明文件（ *.d.ts）的类型检查
 };
 
 const indexPostcssOption = {

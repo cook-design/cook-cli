@@ -1,6 +1,6 @@
 {
   "name": "cook-cli",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "cook cli",
   "bin": {
     "cook": "./bin/cook"
