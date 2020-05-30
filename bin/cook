@@ -27,6 +27,13 @@ program
   });
 
 program
+  .command('beta')
+  .description('组件发布beta版本')
+  .action(async (data) => {
+    await require(res('beta'))(data);
+  });
+
+program
   .command('publish')
   .description('组件发布到npm')
   .action(async (data) => {
