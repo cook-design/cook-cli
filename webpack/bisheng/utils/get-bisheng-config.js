@@ -31,10 +31,12 @@ const defaultConfig = {
   },
 };
 
-module.exports = function getBishengConfig(configFile) {
-  const customizedConfig = fs.existsSync(configFile) ? require(configFile) : {};
+module.exports = function getBishengConfig() {
+  const customizedConfig = require('../../bishengConfig/index');
+  console.log(`customizedConfig: ${JSON.stringify(customizedConfig, null, 2)}`);
+
   const config = Object.assign({}, defaultConfig, customizedConfig);
-  config.theme = resolve.sync(config.theme, { basedir: process.cwd() });
+  // config.theme = resolve.sync(config.theme, { basedir: process.cwd() });
   config.transformers = config.transformers.concat({
     test: /\.md$/,
     use: markdownTransformer,

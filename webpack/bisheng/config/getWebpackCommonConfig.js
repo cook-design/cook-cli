@@ -229,13 +229,13 @@ module.exports = (appConfig) => {
   // 初始化index config
   const indexConfig = webpackConfig('index');
   indexConfig.entry = {
-    index: path.join(__dirname, '../tmp', `entry.index.js`),
+    index: path.join(process.cwd(), 'tmp', `entry.index.js`),
   };
 
   // 初始化demo config
   const demoConfig = webpackConfig('demo');
   demoConfig.entry = {
-    demo: path.join(__dirname, '../tmp', `entry.demo.js`),    
+    demo: path.join(process.cwd(), 'tmp', `entry.demo.js`),    
   };
 
   return [

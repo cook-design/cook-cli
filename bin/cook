@@ -3,6 +3,7 @@
 require('colors');
 const { resolve } = require('path');
 const program = require('commander');
+const build = require('../commands/build');
 const res = command => resolve(__dirname, '../commands/', command);
 
 // 定义当前版本
@@ -62,10 +63,21 @@ program
   });
 
 program
-  .command('build')
+  .command('build [buildType] [buildEnv] [appName] [npmName] [branchVersion] [ossToken] [npmUser] [npmPassword] [npmEmail] [npmRegistry]')
   .description('构建')
-  .action((data) => {
-    require(res('build'))(data);
+  .action(async (buildType = 'local', buildEnv = '', appName = '', npmName = '', branchVersion = '', ossToken = '', npmUser = '', npmPassword = '', npmEmail = '', npmRegistry = '') => {
+    await build({
+      buildType,
+      buildEnv,
+      appName,
+      npmName,
+      branchVersion,
+      ossToken,
+      npmUser,
+      npmPassword,
+      npmEmail,
+      npmRegistry,
+    });
   });
 
 program

@@ -27,14 +27,16 @@ nunjucks.configure('*', {
 });
 
 const entryTemplate = fs.readFileSync(path.join(__dirname, 'entry.nunjucks')).toString();
-const tmpDirPath = path.join(__dirname, '../bisheng/tmp');
+const tmpDirPath = path.join(process.cwd(), 'tmp');
 mkdirp.sync(tmpDirPath);
 
 function generateEntryFile(componentPath, entryName) {
   const entryPath = path.join(tmpDirPath, `entry.${entryName}.js`);
+  const mdPath = path.join(__dirname, 'utils/data.js');
   fs.writeFileSync(
     entryPath,
     nunjucks.renderString(entryTemplate, {
+      mdPath,
       componentPath,
       appConfig: JSON.stringify({ viewType }),
     }),
@@ -108,9 +110,9 @@ const handleWatch = () => {
   // });
 }
 
-exports.start = async ({ bishengConfigPath }) => {
+exports.start = async () => {
   process.env.NODE_ENV = 'development';
-  const bishengConfig = getBishengConfig(bishengConfigPath);
+  const bishengConfig = getBishengConfig();
   context.initialize({
     bishengConfig
   });
@@ -146,13 +148,15 @@ exports.start = async ({ bishengConfigPath }) => {
   server.listen(startParam.port, '0.0.0.0');
 };
 
-exports.build = function build({ bishengConfigPath, callback }) {
+exports.build = function build(callback) {
   process.env.NODE_ENV = 'production';
-  const bishengConfig = getBishengConfig(bishengConfigPath);
+  const bishengConfig = getBishengConfig();
   context.initialize({
     bishengConfig,
     isBuild: true,
   });
+
+  console.log(`bishengConfig: ${JSON.stringify(bishengConfig, null, 2)}`);
   generatorHtml(bishengConfig);
 
   const webpackConfig = getWebpackCommonConfig({
@@ -168,8 +172,7 @@ exports.build = function build({ bishengConfigPath, callback }) {
     }
 
     require('./loaders/common/boss').jobDone();
-    if (callback) {
-      callback();
-    }
+
+    callback && callback();
   });
 };

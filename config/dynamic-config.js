@@ -8,6 +8,8 @@ const getConfig = (key, defaultValue) => {
 }
 
 const config = {
+  // 辰森私域registry
+  CHOICE_NPM_URL: getConfig('API_URL', 'http://npm.choicesaas.cn'),
   // cook server url
   API_URL: getConfig('API_URL', 'http://api.cook.choicesaas.cn'),
   // API_URL: 'http://127.0.0.1:7001',

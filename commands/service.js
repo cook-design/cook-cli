@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
-const { API_URL, GITLAB_API_URL, GITLAB_GROUP, NPM_URL } = require('../config/dynamic-config.js');
+const { API_URL, GITLAB_API_URL, GITLAB_GROUP, CHOICE_NPM_URL } = require('../config/dynamic-config.js');
 
 const ajaxWrapper = ({ method = 'GET', url, param }) => {
   return new Promise((resolve, reject) => {
@@ -115,9 +115,8 @@ const createGitLabProject = async ({ token, name, description }) => {
   return await response.json();
 }
 
-// 校验组件版本是否已经发布到TNPM
-const checkNpmVersion = async (componentName) => {
-  const url = `${NPM_URL}/${componentName}`;
+const getNpmInfo = async (npmName) => {
+  const url = `${CHOICE_NPM_URL}/${npmName}`;
   const response = await fetch(url);
   return await response.json();
 }
@@ -132,5 +131,5 @@ module.exports = {
   saveVersion,
   checkGitLabUser,
   createGitLabProject,
-  checkNpmVersion,
+  getNpmInfo,
 };
