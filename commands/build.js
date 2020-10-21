@@ -228,5 +228,6 @@ module.exports = async (options) => {
     });
   } catch (err) {
     console.log(colors.red(err));
+    throw err;
   }
 };
