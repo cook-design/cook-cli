@@ -228,6 +228,8 @@ module.exports = async (options) => {
     });
   } catch (err) {
     console.log(colors.red(err));
-    throw err;
+    console.log('构建程序异常退出');
+    // 这里 exit(1) 是让jenkins任务构建失败
+    process.exit(1);
   }
 };
