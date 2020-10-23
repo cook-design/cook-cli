@@ -32,7 +32,7 @@ mkdirp.sync(tmpDirPath);
 
 function generateEntryFile(componentPath, entryName) {
   const entryPath = path.join(tmpDirPath, `entry.${entryName}.js`);
-  const mdPath = path.join(__dirname, 'utils/data.js');
+  const mdPath = path.join(__dirname, 'utils/data.js').replace(/\\/g, '\\\\');
   fs.writeFileSync(
     entryPath,
     nunjucks.renderString(entryTemplate, {
