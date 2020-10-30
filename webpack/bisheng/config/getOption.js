@@ -203,8 +203,11 @@ const getThemeOption = () => {
 }
 
 const getPkgOption = () => {
-  const pkgConfig = require(path.join(process.cwd(), 'package.json'));
-  return pkgConfig;
+  if (fs.existsSync(path.join(process.cwd(), 'package.json'))) {
+    const pkgConfig = require(path.join(process.cwd(), 'package.json'));
+    return pkgConfig;
+  }
+  return {};
 }
 
 const getReactVersion = () => {
