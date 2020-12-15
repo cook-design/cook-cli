@@ -9,6 +9,7 @@ const rimraf = require('rimraf');
 const babel = require('gulp-babel');
 const del = require('del');
 const { tsLoaderOption, getBabelLoaderOption } = require('./getOption');
+const { existsSync } = require('fs');
 
 const libDir = path.join(process.cwd(), 'lib');
 const esDir = path.join(process.cwd(), 'es');
@@ -26,13 +27,19 @@ const tsCompile = (modules) => new Promise((resolve, reject) => {
       source.unshift(`${componentPath}/**/*.jsx`);
       source.unshift(`${componentPath}/**/*.js`);
     }
-    const tsResult = gulp.src(source)
-      .pipe(ts(tsLoaderOption))
-      .on('error', (err) => {
-        reject(err);
-        console.log('ts compile error:', err);
-      })
-      .pipe(gulp.dest(!modules ? esDir : libDir));
+
+    let tsResult = null;
+    if (existsSync(`${process.cwd()}/tsconfig.json`)) {
+      tsResult = ts.createProject(`${process.cwd()}/tsconfig.json`).src();
+    } else {
+      tsResult = gulp.src(source).pipe(ts(tsLoaderOption));
+    }
+
+    tsResult.on('error', (err) => {
+      reject(err);
+      console.log('ts compile error:', err);
+    })
+    .pipe(gulp.dest(!modules ? esDir : libDir));
 
     const check = () => {
       resolve(tsResult);
